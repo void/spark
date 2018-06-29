@@ -24,6 +24,8 @@ import java.util.*;
 import java.math.BigInteger;
 import java.math.BigDecimal;
 
+import org.apache.spark.sql.api.java.TransformFunction;
+import org.apache.spark.sql.functions;
 import scala.collection.JavaConverters;
 import scala.collection.Seq;
 
@@ -66,6 +68,14 @@ public class JavaDataFrameSuite {
   public void testExecution() {
     Dataset<Row> df = spark.table("testData").filter("key = 1");
     Assert.assertEquals(1, df.select("key").collectAsList().get(0).get(0));
+  }
+  @Test
+  public void testTransform(){
+    Dataset<Row> df  = spark.emptyDataFrame();
+    Dataset<Row> transformed = df.transform((TransformFunction<Row, Row>) ds -> ds.withColumn("hello", functions.lit("world")));
+   String[] expected = { "hello"};
+   Assert.assertArrayEquals(expected, transformed.columns());
+
   }
 
   @Test

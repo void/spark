@@ -34,6 +34,7 @@ import org.apache.spark.api.java.function._
 import org.apache.spark.api.python.{PythonRDD, SerDeUtil}
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
+import org.apache.spark.sql.api.java.TransformFunction
 import org.apache.spark.sql.catalyst._
 import org.apache.spark.sql.catalyst.analysis._
 import org.apache.spark.sql.catalyst.catalog.HiveTableRelation
@@ -2534,6 +2535,9 @@ class Dataset[T] private[sql](
    * @since 1.6.0
    */
   def transform[U](t: Dataset[T] => Dataset[U]): Dataset[U] = t(this)
+
+  /**  Java-specific version of transform. */
+  def transform[U](t: TransformFunction[T, U]): Dataset[U] = t.call(this)
 
   /**
    * :: Experimental ::
